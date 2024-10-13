@@ -1,5 +1,8 @@
 import numpy as np
-from scipy.special import gamma, hyper
+from scipy.special import gamma
+from mpmath import hyper
+
+from .TFBM import TFBM
 
 class TFBM2(TFBM):
 
@@ -11,7 +14,7 @@ class TFBM2(TFBM):
         self._lambd_squared = self.lambd ** 2
 
     def ct_2(self, t):
-        Ct = self._ct2_first_multiplicative
-             * (1-hyper([1, -0.5], [1-self.H, 0.5, 1], (self._lambd_squared * (t**2))/4)) \
+        return (self._ct2_first_multiplicative
+             * (1-hyper([1, -0.5], [1-self.H, 0.5, 1], (self._lambd_squared * (t**2))/4))
              + (np.abs(t)**(2*self.H) * self._ct2_second_multiplicative
-             * hyper([1, self.H-0.5], [1, self.H+1, self.H+0.5], (self._lambd_squared * (t**2))/4))
+             * hyper([1, self.H-0.5], [1, self.H+1, self.H+0.5], (self._lambd_squared * (t**2))/4)))

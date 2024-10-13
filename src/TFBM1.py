@@ -1,4 +1,4 @@
-from TFBM import TFBM
+from .TFBM import TFBM
 import numpy as np
 from scipy.special import gamma, kv
 
@@ -20,17 +20,3 @@ class TFBM1(TFBM):
                 * self._ct_2_multiplicative_part * kv(self.H, abs(self.lambd*t)))
         return Ct
 
-
-if __name__ == "__main__":
-    T = 10
-    N = 100
-    H = 0.7
-    lambd = 0.3
-    generator = TFBM1(T, N, H, lambd)
-    num_of_samples = 1000
-    generator.generate_samples(num_of_samples)
-    import cProfile
-    cProfile.run('generator.generate_samples(num_of_samples)', 'profile_results_tfbm1_new')
-    import pstats
-    stats = pstats.Stats('profile_results_tfbm1_new')
-    stats.sort_stats('time').print_stats()
