@@ -25,6 +25,7 @@ class TFBM3(TFBM):
         self.cov_matrices_dir = "cov_matrices_tfbm3"
 
     def ct_2(self, t):
+        # Assumption k_B  * T / (m * gamma_H) = 1 
         return 2 *  t**(self._exponent) * mittag_leffler(self._alpha,
                                                          self._beta,
                                                          self._gamm, -t/self.lambd)
