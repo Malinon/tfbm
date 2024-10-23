@@ -15,19 +15,19 @@ def mittag_leffler(alpha, beta, gamm, z, tolerance=1e-20):
     return result / gamma(gamm)
 
 class TFBM3(TFBM):
-    def __init__(self, T, N, H, lambd, gamma_H=1, method="davies-harte"):
+    def __init__(self, T, N, H, lambd, method="davies-harte"):
         super().__init__(T, N, H, lambd, gamma_H, method)
         self.cov_matrices_dir = "cov_matrices_tfbm3"
-        self._gamm = 1 - 2*self.H
+        self._gamm = 1 - 2 * self.H
         self._alpha = 1
-        self._beta = 3 - 2*self.H
-        self._exponent = 2-2*self.H
+        self._beta = 3 - 2 * self.H
+        self._exponent = 2 - 2 * self.H
         self.cov_matrices_dir = "cov_matrices_tfbm3"
 
     def ct_2(self, t):
         # Assumption k_B  * T / (m * gamma_H) = 1 
         return 2 *  t**(self._exponent) * mittag_leffler(self._alpha,
                                                          self._beta,
-                                                         self._gamm, -t/self.lambd)
+                                                         self._gamm, -t / self.lambd)
 
     

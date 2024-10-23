@@ -4,7 +4,7 @@ import os
 
 class TFBM:
     """ Abstract class representing generator of TFBM process """
-    def __init__(self, T, N, H, lambd,, method="davies-harte"):
+    def __init__(self, T, N, H, lambd, method="davies-harte"):
         """"
         Parameters:
         T: float
@@ -68,7 +68,7 @@ class TFBM:
         Z_odd = np.random.normal(0, 1, self.n - 1)
 
         Y = np.zeros(2*self.n, dtype=complex)
-        Y[self.n] = Z_odd + 1j * Z_even
+        Y[1:self.n] = Z_odd + 1j * Z_even
         Y[self.n + 1:] = np.conj(Y[1:self.n][::-1])
         Y[0] = np.random.normal(0, 1) / np.sqrt(2) 
         Y[self.n] =  np.random.normal(0, 1) / np.sqrt(2)
@@ -78,10 +78,10 @@ class TFBM:
         X = np.real(np.fft.fft(Y) / np.sqrt(self.n * 2))[:self.n]
         return X
     
-    def _generate_row_of_cirular_matrix(self):
+    def _generate_row_of_cirulant_matrix(self):
         """ Generates row of circulant matrix which is used in Davies-Harte method """
         # Cache Ct_2 values
-        ct_2_values = [self.ct_2(t) for t in self.ts] + [self.ct_2(self.ts_[-1] + self.dt)]
+        ct_2_values = [self.ct_2(t) for t in self.ts] + [self.ct_2(self.ts[-1] + self.dt)]
         autocovariance = lambda k: 0.5 * (ct_2_values[k + 1] - (2 * ct_2_values[k]) + ct_2_values[abs(k - 1)])
 
         row = np.zeros(2 * self.n)
@@ -97,7 +97,7 @@ class TFBM:
         if self.method == "davies-harte":
             # Use Davies-Harte method to generate Tempered Fractional Gaussian Noise and transform it to TFBM
 
-            row = self._generate_row_of_cirular_matrix()
+            row = self._generate_row_of_cirulant_matrix()
             # Find eigenvalues of circulant matrix
             eigenvals = np.fft.fft(row).real
 
