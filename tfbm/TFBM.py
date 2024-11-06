@@ -121,8 +121,8 @@ class TFBM:
             
             # Perform sum 4.4 from Asmussen (It works, because L is lower triangular matrix)
             # and insert 0 at the beginning of each trajectory
-            samples = np.insert(np.matmul(L,Z), 0, [0], axis=0)
-            increments = np.diff(samples, axis=0)
+            samples = np.transpose(np.insert(np.matmul(L,Z), 0, [0], axis=0))
+            increments = np.diff(samples, axis=1)
         if get_increments:
             return samples, increments
         else:
