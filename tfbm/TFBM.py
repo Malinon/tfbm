@@ -68,10 +68,10 @@ class TFBM:
         Z_odd = np.random.normal(0, 1, self.n - 1)
 
         Y = np.zeros(2*self.n, dtype=complex)
-        Y[1:self.n] = Z_odd + 1j * Z_even
+        Y[1:self.n] = (Z_odd + 1j * Z_even) / np.sqrt(2)
         Y[self.n + 1:] = np.conj(Y[1:self.n][::-1])
-        Y[0] = np.random.normal(0, 1) / np.sqrt(2) 
-        Y[self.n] =  np.random.normal(0, 1) / np.sqrt(2)
+        Y[0] = np.random.normal(0, 1)
+        Y[self.n] =  np.random.normal(0, 1)
         
         Y = np.sqrt(eigenvals) * Y
 
