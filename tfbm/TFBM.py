@@ -113,6 +113,8 @@ class TFBM:
                     incr = self._generate_dh_increments(eigenvals)
                     samples.append(np.insert(np.cumsum(incr), 0, [0], axis=None))
                     increments.append(incr)
+                samples = np.array(samples)
+                increments = np.array(increments)
         else:
             # Generate samples using Cholesky method
             
