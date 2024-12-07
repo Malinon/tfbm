@@ -21,7 +21,7 @@ MIN_H = parameters['MIN_H']
 MAX_H = parameters['MAX_H']
 N_LAMBDA = parameters['N_LAMBDA']
 MIN_LAMBDA = parameters['MIN_LAMBDA']
-MAX_LAMBDA = parameters['MAX_LABDA']
+MAX_LAMBDA = parameters['MAX_LAMBDA']
 
 if TFBM_TYPE == 1:
     TFBM = tfbm.TFBM1
