@@ -3,14 +3,14 @@ from .TFBM import TFBM
 import numpy as np
 from scipy.special import gamma, factorial
 
-def mittag_leffler(alpha, beta, gamm, z, tolerance=1e-20, max_iter=40):
+def mittag_leffler(alpha, beta, gamm, z, tolerance=1e-20):
     prev_sum = 0.0
     k = 1
     if gamm == 0:
         # Extreme case H = 0.5
         return 1.0 / gamma(beta)
     result = (gamma(gamm)) / (gamma(beta))
-    while abs(result - prev_sum) > tolerance:# and k < max_iter:
+    while abs(result - prev_sum) > tolerance:
         prev_sum = result
         term = (gamma(gamm + k) * z**k) / (factorial(k) * gamma(alpha * k + beta))
         k += 1
