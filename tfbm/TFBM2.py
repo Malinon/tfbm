@@ -6,8 +6,8 @@ from .TFBM import TFBM
 
 class TFBM2(TFBM):
 
-    def __init__(self, T, N, H, lambd, gamma_H=1, method="davies-harte"):
-        super().__init__(T, N, H, lambd, gamma_H, method)
+    def __init__(self, T, N, H, lambd, method="davies-harte"):
+        super().__init__(T, N, H, lambd, method)
         self.cov_matrices_dir = "cov_matrices_tfbm2"
         self._ct2_first_multiplicative =  (-2*gamma(self.H)*((self.lambd)**(-2*self.H))) / (np.sqrt(np.pi)*gamma(self.H-0.5))
         self._ct2_second_multiplicative = (gamma(1-self.H)) / (np.sqrt(np.pi) * self.H * (2**(2*self.H)) * gamma(self.H+0.5))
