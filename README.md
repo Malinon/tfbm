@@ -1,4 +1,4 @@
-# My Package
+# tfbm
 
 Package for simulating tempered fractional Brownian motion 
 
