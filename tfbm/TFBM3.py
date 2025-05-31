@@ -21,6 +21,23 @@ def mittag_leffler(alpha, beta, gamm, z, tolerance=1e-20):
 
     return result / gamma(gamm)
 
+import ctypes
+from ctypes import c_double
+
+# Load the GSL shared library (update path as needed)
+gsl = ctypes.CDLL('libgsl.so')
+
+# Define the argument and return types for gsl_sf_gamma_inc
+gsl.gsl_sf_gamma_inc.argtypes = [c_double, c_double]
+gsl.gsl_sf_gamma_inc.restype = c_double
+
+def gamma_inc(a, x):
+    """
+    Python wrapper for gsl_sf_gamma_inc(a, x)
+    Computes the incomplete gamma function.
+    """
+    return gsl.gsl_sf_gamma_inc(c_double(a), c_double(x))
+
 # We only need M-L function for alpha=1, beta=3-2*H, gamm=1-2*H
 def simplified_mittag_leffler(H, z, tolerance=1e-20):
     prev_sum = 0.0
