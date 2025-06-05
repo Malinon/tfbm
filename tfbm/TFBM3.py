@@ -1,63 +1,26 @@
 from .TFBM import TFBM
 
 import numpy as np
-from scipy.special import gamma, factorial
+import mpmath
+import numpy as np
+from scipy.special import gamma
 
-def mittag_leffler(alpha, beta, gamm, z, tolerance=1e-20):
-    prev_sum = 0.0
-    k = 1
-    if gamm == 0:
-        # Extreme case H = 0.5
-        return 1.0 / gamma(beta)
-    result = (gamma(gamm)) / (gamma(beta))
-    while abs(result - prev_sum) > tolerance:
-        prev_sum = result
-        term = (gamma(gamm + k) * z**k) / (factorial(k) * gamma(alpha * k + beta))
-        k += 1
-        if term != np.inf and term in [np.nan] and term != -np.inf:
-            result += term
-        else:
-            break
 
-    return result / gamma(gamm)
+def gamma_inc(a, z):
+    return mpmath.gammainc(z=a, a=0, b=z)
 
-import ctypes
-from ctypes import c_double
-
-# Load the GSL shared library (update path as needed)
-gsl = ctypes.CDLL('libgsl.so')
-
-# Define the argument and return types for gsl_sf_gamma_inc
-gsl.gsl_sf_gamma_inc.argtypes = [c_double, c_double]
-gsl.gsl_sf_gamma_inc.restype = c_double
-
-def gamma_inc(a, x):
-    """
-    Python wrapper for gsl_sf_gamma_inc(a, x)
-    Computes the incomplete gamma function.
-    """
-    return gsl.gsl_sf_gamma_inc(c_double(a), c_double(x))
-
-# We only need M-L function for alpha=1, beta=3-2*H, gamm=1-2*H
-def simplified_mittag_leffler(H, z, tolerance=1e-20):
-    prev_sum = 0.0
-    k = 1
-    gamm = 1 - 2 * H
-    beta = 3 - 2 * H
+def mittag_leffer(H, z):
+    if z == 0:
+        # 1 / gamma(beta)
+        return 1.0 / gamma(3 - 2 * H)
     if H == 0.5:
         # Extreme case H = 0.5
-        return 1.0 / gamma(gamm)
-    result = (gamma(gamm)) / (gamma(beta))
-    while abs(result - prev_sum) > tolerance:
-        prev_sum = result
-        term = ((z**k) / (factorial(k))) / ((k + 2 - 2 * H) * (k + gamm)) 
-        k += 1
-        if term != np.inf and term in [np.nan] and term != -np.inf:
-            result += term
-        else:
-            break
-
-    return result / gamma(gamm)
+        return 1.0
+    a1 = 1 - 2 * H
+    a2 = 2 - 2 * H
+    numerator = -(z * gamma_inc(a1, -z) + gamma_inc(a2, -z))
+    denominator = gamma(a1) * (-z)**(a2)
+    return numerator / denominator
 
 class TFBM3(TFBM):
     def __init__(self, T, N, H, lambd, method="davies-harte"):
@@ -71,6 +34,6 @@ class TFBM3(TFBM):
 
     def ct_2(self, t):
         # Assumption k_B  * T / (m * gamma_H) = 1
-        return 2 *  t**(self._exponent) * simplified_mittag_leffler(self.H, -t / self.lambd)
+        return 2 *  t**(self._exponent) * mittag_leffer(self.H, -t / self.lambd)
 
     
