@@ -26,9 +26,6 @@ class TFBM3(TFBM):
     def __init__(self, T, N, H, lambd, method="davies-harte"):
         super().__init__(T, N, H, lambd, method)
         self.cov_matrices_dir = "cov_matrices_tfbm3"
-        self._gamm = 1 - 2 * self.H
-        self._alpha = 1
-        self._beta = 3 - 2 * self.H
         self._exponent = 2 - 2 * self.H
         self.cov_matrices_dir = "cov_matrices_tfbm3"
 
