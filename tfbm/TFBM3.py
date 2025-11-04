@@ -2,7 +2,7 @@ from .TFBM import TFBM
 
 import mpmath
 import numpy as np
-from mittag_leffler import mittag_leffer
+from .mittag_leffer import mittag_leffer
 
 class TFBM3(TFBM):
     def __init__(self, T, N, H, lambd, method="davies-harte"):
