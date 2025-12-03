@@ -4,7 +4,7 @@ import os
 
 class TFBM:
     """ Abstract class representing generator of TFBM process """
-    def __init__(self, T, N, H, lambd, method="davies-harte"):
+    def __init__(self, T, N, H, lambd, method="davies-harte", save_cov_matrix=True):
         """"
         Parameters:
         T: float
@@ -17,13 +17,16 @@ class TFBM:
             Tempering parameter
         method: str
             Method of generating TFBM process
+        save_cov_matrix: bool
+            Whether to save covariance matrix to file or not (in Cholesky method)
         """
         self.H = H
         self.lambd = lambd
-        self.ts = np.linspace(0, T, N+1)
+        self.ts = np.linspace(0, T, N+1) 
         self.N = N + 1
         self.T = T
         self.method = method
+        self.save_cov_matrix = save_cov_matrix
         self.n = N # Number of time steps
         self.dt = self.ts[2] - self.ts[1]
 
@@ -36,27 +39,27 @@ class TFBM:
                 sigma[t,s] = (ct_2_values[t] + ct_2_values[s] - ct_2_values[abs(t-s)]) / 2
         return sigma
     
-    def _generate_and_save_cov(self):
-        """ Generates and saves covariance matrix of TFBM process """
-        sigma = self.covariance_matrix()
+    def _generate_covariance_filename(self):
+        """ Generates filename for covariance matrix of TFBM process """
         h_str = str(self.H).replace('.', '_')
         l_str = str(self.lambd).replace('.', '_')
-        np.savetxt(self.cov_matrices_dir + f"/H_{h_str}_l_{l_str}_T_{str(self.T)}_N_{str(self.N)}.txt", sigma)
-        return sigma
+        return f"H_{h_str}_l_{l_str}_T_{str(self.T)}_N_{str(self.N)}.txt"
 
     def _load_cov_matrix(self):
         """ Loads covariance matrix of TFBM process from file """
-        h_str = str(self.H).replace('.', '_')
-        l_str = str(self.lambd).replace('.', '_')
-        filename = self.cov_matrices_dir + f"/H_{h_str}_l_{l_str}_T_{str(self.T)}_N_{str(self.N)}.txt"
+        filename = os.path.join(self.self.cov_matrices_dir, self._generate_covariance_filename())
         if os.path.isfile(filename):
             sigma = np.loadtxt(filename)
         else:
-            sigma = self._generate_and_save_cov()
+            sigma = self.covariance_matrix()
+            if self.save_cov_matrix:
+                os.makedeirs(self.self.cov_matrices_dir, exist_ok=True)
+                np.savetxt(filename, sigma)
         return sigma
     
-    def cholesky_decomp_from_file(self):
-        """ Loads covariance matrix from file and returns its Cholesky decomposition """
+    def _get_cholesky_decomposition(self):
+        """ Returns Cholesky decomposition of covariance matrix of TFBM process
+            If matix is already saved to file, it loads it from there """
         sigma = self._load_cov_matrix()
         # It looks ok, but discuss with advisor about this fragment
         sigma = np.delete(sigma, 0, 0)
@@ -119,7 +122,7 @@ class TFBM:
             # Generate samples using Cholesky method
             
             Z = np.random.normal(size=(self.n, num_of_samples)) # Generate an (n + 1) column vector of i.i.d. standard normal r.v.
-            L = self.cholesky_decomp_from_file()
+            L = self._get_cholesky_decomposition()
             
             # Perform sum 4.4 from Asmussen (It works, because L is lower triangular matrix)
             # and insert 0 at the beginning of each trajectory
