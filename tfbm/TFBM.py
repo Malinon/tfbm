@@ -20,6 +20,7 @@ class TFBM:
         save_cov_matrix: bool
             Whether to save covariance matrix to file or not (in Cholesky method)
         """
+        self._validate_parameters(T, N, H, lambd, method)
         self.H = H
         self.lambd = lambd
         self.ts = np.linspace(0, T, N+1) 
@@ -29,6 +30,21 @@ class TFBM:
         self.save_cov_matrix = save_cov_matrix
         self.n = N # Number of time steps
         self.dt = self.ts[2] - self.ts[1]
+        
+    
+    def _validate_parameters(self, T, N, H, lambd, method):
+        """ Validates parameters of TFBM process """
+        if H <= 0:
+            raise ValueError("Hurst exponent must be positive")
+        if  lambd <= 0:
+            raise ValueError("Tempering parameter must be positive")
+        if T <= 0:
+            raise ValueError("Time horizon must be positive")
+        if N <= 0:
+            raise ValueError("Number of time steps must be positive integer")
+        allowed_methods = ["davies-harte", "cholesky"]
+        if method not in allowed_methods:
+            raise ValueError(f"Method must be one of {allowed_methods}")
 
     def covariance_matrix(self):
         """ Generates covariance matrix of TFBM process """

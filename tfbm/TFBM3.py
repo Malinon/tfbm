@@ -9,6 +9,12 @@ class TFBM3(TFBM):
         super().__init__(T, N, H, lambd, method)
         self.cov_matrices_dir = "cov_matrices_tfbm3"
         self._exponent = 2 - 2 * self.H
+    
+    def _validate_parameters(self, T, N, H, lambd, method):
+        """ Validates parameters of TFBM1 process """
+        super()._validate_parameters(T, N, H, lambd, method)
+        if H >= 1 or H < 0.5:
+            raise ValueError("Hurst exponent must be in [0.5, 1) for TFBM3")
 
     def ct_2(self, t):
         # Assumption k_B  * T / (m * gamma_H) = 1
