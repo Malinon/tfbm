@@ -24,7 +24,6 @@ class TFBM:
         self.H = H
         self.lambd = lambd
         self.ts = np.linspace(0, T, N+1) 
-        self.N = N + 1
         self.T = T
         self.method = method
         self.save_cov_matrix = save_cov_matrix
@@ -59,7 +58,7 @@ class TFBM:
         """ Generates filename for covariance matrix of TFBM process """
         h_str = str(self.H).replace('.', '_')
         l_str = str(self.lambd).replace('.', '_')
-        return f"H_{h_str}_l_{l_str}_T_{str(self.T)}_N_{str(self.N)}.txt"
+        return f"H_{h_str}_l_{l_str}_T_{str(self.T)}_N_{str(self.n)}.txt"
 
     def _load_cov_matrix(self):
         """ Loads covariance matrix of TFBM process from file """
