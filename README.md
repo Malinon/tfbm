@@ -50,6 +50,13 @@ pip install ./tfbm
 ```
 
 ## Example usage
+```python
+import tfbm
+
+# Create generator of TFBM I 
+tfbm1 = tfbm.TFBM1(H=10, T=10, N=500, lambd=0.5)
+trajectories, increments = tfbm1.generate_samples(num_of_samples=100, get_increments=True)
+```
 
 
 
