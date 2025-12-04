@@ -21,13 +21,21 @@ class TFBM:
             Whether to save covariance matrix to file or not (in Cholesky method)
         """
         self._validate_parameters(T, N, H, lambd, method)
+        ## Hurst exponent
         self.H = H
+        ## Tempering parameter
         self.lambd = lambd
+        ## Times at which process is sampled
         self.ts = np.linspace(0, T, N+1) 
+        ## Time horizon
         self.T = T
+        ## Name of method of generating TFBM process
         self.method = method
+        ## Whether to save covariance matrix to file or not (in Cholesky method)
         self.save_cov_matrix = save_cov_matrix
-        self.n = N # Number of time steps
+        ## Number of time steps
+        self.n = N
+        ## Time step size
         self.dt = self.ts[2] - self.ts[1]
         
     
@@ -112,6 +120,19 @@ class TFBM:
         return row
     
     def generate_samples(self, num_of_samples, get_increments=False):
+        """
+        Generates samples of TFBM process
+        Parameters:
+        num_of_samples: int
+            Number of samples to generate
+        get_increments: bool
+            Whether to return increments of the process along with samples
+        Returns:
+        samples: np.ndarray
+            Generated samples of TFBM process (shape: (num_of_samples, N + 1))
+        increments: np.ndarray
+            Increments of the process (if get_increments is True)
+        """
         if self.method == "davies-harte":
             # Use Davies-Harte method to generate Tempered Fractional Gaussian Noise and transform it to TFBM
 
