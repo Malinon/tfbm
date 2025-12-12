@@ -2,7 +2,7 @@ import numpy as np
 
 def genereate_circulant_row(cov_fun, embed_exp:int, sample_size:int):
     m =  2 ** embed_exp
-    times = np.concatenate([np.arrange(start = 0, stop=m//2), np.arrange(start=m//2, stop=0, step=-1)]) / sample_size
+    times = np.concatenate([np.arange(start = 0, stop=m//2), np.arange(start=m//2, stop=0, step=-1)]) / sample_size
     matrix_row = cov_fun(times)
     return matrix_row
 
