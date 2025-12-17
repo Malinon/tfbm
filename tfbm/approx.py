@@ -24,7 +24,7 @@ def wood_chan_increments(m, sample_size, eigenvals):
     X = np.real(np.fft.fft(a) / np.sqrt(m))[:sample_size]
     return X
 
-def find_optimal_eigenvals(cov_fun, max_embedding_exp:int, sample_size:int):
+def find_optimal_eigenvals(cov_fun, max_embedding_exp:int, sample_size:int, approximate:bool):
     embed_exp = np.ceil(np.log2(sample_size-1))
     while embed_exp <= max_embedding_exp:
         eigen_vals = calculate_eigen_vals(cov_fun, embed_exp, sample_size)
@@ -32,10 +32,13 @@ def find_optimal_eigenvals(cov_fun, max_embedding_exp:int, sample_size:int):
             break
     
     if embed_exp > max_embedding_exp:
-        positive_eigen_vals = np.maximum(eigen_vals, 0)
-        scale_factor = np.sqrt(np.sum(eigen_vals) / np.sum(positive_eigen_vals))
-        eigen_vals = positive_eigen_vals * scale_factor
-        print("Warning: Maximum embedding exponent exceeded. Using adjusted eigenvalues.")
+        if approximate:
+            positive_eigen_vals = np.maximum(eigen_vals, 0)
+            scale_factor = np.sqrt(np.sum(eigen_vals) / np.sum(positive_eigen_vals))
+            eigen_vals = positive_eigen_vals * scale_factor
+            print("Warning: Maximum embedding exponent exceeded. Using adjusted eigenvalues.")
+        else:
+            raise ValueError("Wood-Chan: For maximal embedding circulant matris is not semi-positive")
     return int(embed_exp), eigen_vals
 
 def wood_chan(cov_fun, max_embedding_exp:int, sample_size:int):
