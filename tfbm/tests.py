@@ -31,16 +31,16 @@ def _dma_covariance(tfbm_type, H_0, lambda_0, N, T, lag):
     dma_covariance = np.zeros((N - lag + 1, N - lag + 1))
     for j in range(N):
         for k in range(j+1):
-            dma_covariance[j, k-1] = ( ((1 - 1/lag)**2) + basic_cov[j, k]
+            dma_covariance[j, k-1] = ( ((1 - 1/lag)**2) * basic_cov[j, k]
             + (1/(lag**2) - 1 / lag) * basic_cov[j + lag - 1, k:(k+lag-1)].sum()
             + (1/(lag**2) - 1 / lag) * basic_cov[k + lag - 1, j:(j+lag-1)].sum()
             + (1/(lag**2)) * basic_cov[j:(j+lag-1), k:(k+lag-1)].sum())
-            dma_covariance[k, j-1] = dma_covariance[j, k-1]
+            dma_covariance[k, j] = dma_covariance[j, k]
     return dma_covariance
 
 def _acvf_matrix(N, lag):
     if lag == 0:
-        return np.identity(N) * (1 / N)
+        return np.identity(N) / N
     
     stat_matrix = np.zeros((N, N))
     val = 1 / (2 * (N - lag))
@@ -65,11 +65,11 @@ def _tamsd_matrix(N, lag):
     return stat_matrix
 
 def _get_dma(trajectory, lag):
-    lag = lag + 1
-    trajectory_cumsum = np.cumsum(trajectory, axis=0)
+    trajectory_extended = np.insert(trajectory, 0, 0, axis=0)
+    trajectory_cumsum = np.cumsum(trajectory_extended, axis=0)
     moving_avg = (trajectory_cumsum[lag:] - trajectory_cumsum[:-lag]) / lag
-    detrended_trajectory = trajectory[lag:] - moving_avg
-    dma = np.mean(np.sum(detrended_trajectory**2, axis=1))
+    detrended_trajectory = trajectory[(lag - 1):] - moving_avg
+    dma = np.mean(detrended_trajectory**2)
     return dma
 
 def _quadratic_form_test(eigenvalues, test_statistic, monte_carlo_steps):
@@ -116,6 +116,8 @@ def tamsd_test(trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps=1000
         The time lag for the  TAMSD.
     T : float
         The time horizon of the TFBM.
+    monte_carlo_steps : int, optional
+        The number of Monte Carlo samples to use for estimating the p-value (default is 1000)
     """
     return _general_quadratic_form_test(_tamsd_matrix, trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps)
 
@@ -139,6 +141,8 @@ def avcf_test(trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps=1000)
         The time lag for the sample autocovariance function.
     T : float
         The time horizon of the TFBM.
+    monte_carlo_steps : int, optional
+        The number of Monte Carlo samples to use for estimating the p-value (default is 1000)
     """
     return _general_quadratic_form_test(_acvf_matrix, trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps)
 
@@ -162,6 +166,8 @@ def dma_test(trajectory, tfbm_type, H, lambd, lag, T, monte_carlo_steps=1000):
         The time lag for the DMA statistic.
     T : float
         The time horizon of the TFBM.
+    monte_carlo_steps : int, optional
+        The number of Monte Carlo samples to use for estimating the p-value (default is 1000)
     """
     N = len(trajectory)
     stat_matrix = np.identity(N - lag + 1) / (N - lag + 1)
