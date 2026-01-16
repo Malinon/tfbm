@@ -172,12 +172,13 @@ class TFBM:
             samples = []
             increments = []
             cov_fun = lambda t: 0.5 * (self.ct_2(t * self.T + self.dt) - 2 * self.ct_2(t * self.T) + self.ct_2(abs(t *self.T - self.dt)))
-            embed_exp, eigenvals = find_optimal_eigenvals(cov_fun,  self.max_embed_exponent, self.n, self.allow)
+            embed_exp, eigenvals = find_optimal_eigenvals(cov_fun,  self.max_embed_exponent, self.n, self.allow_approximation)
             for _ in range(num_of_samples):
                 m = 2 ** embed_exp
                 incr = wood_chan_increments(m, num_of_samples, eigenvals)
                 increments.append(incr)
             increments = np.array(increments)
+            samples = np.cumsum(increments, axis=1)
         if get_increments:
             return samples, increments
         else:

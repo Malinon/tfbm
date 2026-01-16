@@ -1,6 +1,7 @@
 import numpy as np
 
 def genereate_circulant_row(cov_fun, embed_exp:int, sample_size:int):
+    # Create first row of circulant matrix as descibed in equations (2.2)-(2.3) in Wood-Chan paper https://doi.org/10.1080/10618600.1994.10474655
     m =  2 ** embed_exp
     times = np.concatenate([np.arange(start = 0, stop=m//2), np.arange(start=m//2, stop=0, step=-1)]) / sample_size
     matrix_row = cov_fun(times)
