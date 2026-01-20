@@ -29,9 +29,9 @@ def _compute_covariance_matrix(tfbm_type, H_0, lambda_0, N, T):
 def _dma_covariance(tfbm_type, H_0, lambda_0, N, T, lag):
     basic_cov = _compute_covariance_matrix(tfbm_type, H_0, lambda_0, N, T)
     dma_covariance = np.zeros((N - lag + 1, N - lag + 1))
-    for j in range(N):
+    for j in range(N - lag + 1):
         for k in range(j+1):
-            dma_covariance[j, k-1] = ( ((1 - 1/lag)**2) * basic_cov[j, k]
+            dma_covariance[j, k] = ( ((1 - 1/lag)**2) * basic_cov[j + lag - 1, k + lag -1]
             + (1/(lag**2) - 1 / lag) * basic_cov[j + lag - 1, k:(k+lag-1)].sum()
             + (1/(lag**2) - 1 / lag) * basic_cov[k + lag - 1, j:(j+lag-1)].sum()
             + (1/(lag**2)) * basic_cov[j:(j+lag-1), k:(k+lag-1)].sum())
