@@ -29,8 +29,9 @@ def test_tfbm_pass_quadratic_test(tfbm_class, stat_test_function):
 
 def test_brownian_increments_are_ok():
     np.random.seed(3721)
-    trajs = BrownianMotion( N=100, H=H, lambd=LAMBDA).generate_samples(MONTE_CARLO_STEPS)
-    p_vals = [kstest(np.diff(traj), norm.cdf).pvalue for traj in trajs]
+    trajs = BrownianMotion(T, N=100, H=H, lambd=LAMBDA).generate_samples(MONTE_CARLO_STEPS)
+    expected_cdf = norm(loc=0, scale=np.sqrt(T / 100)).cdf
+    p_vals = [kstest(np.diff(traj), expected_cdf).pvalue for traj in trajs]
     median_p_val = np.median(p_vals)
     assert median_p_val > 0.1, f"Median p-value {median_p_val} is too low for BrownianMotion increments"
     
