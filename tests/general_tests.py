@@ -54,5 +54,14 @@ def test_covariance_matrix_ok(tfbm_generator):
     assert not np.isinf(sigma).any()
     assert np.allclose(sigma, sigma.T)
 
+@pytest.mark.parametrize("tfbm_generator", tfbm_generators)
+def test_incremens_are_ok(tfbm_generator):
+    samples, increments = tfbm_generator(1, 100, 0.55, 0.1).generate_samples(50, get_increments=True)
+    increments_by_hand = np.diff(samples, axis=1)
+    assert np.allclose(increments, increments_by_hand)
+    samples, increments = tfbm_generator(1, 100, 0.55, 0.1, method="cholesky").generate_samples(50, get_increments=True)
+    increments_by_hand = np.diff(samples, axis=1)
+    assert np.allclose(increments, increments_by_hand)
+
 
 
