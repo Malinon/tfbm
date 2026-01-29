@@ -70,13 +70,13 @@ class TFBM:
 
     def _load_cov_matrix(self):
         """ Loads covariance matrix of TFBM process from file """
-        filename = os.path.join(self.self.cov_matrices_dir, self._generate_covariance_filename())
+        filename = os.path.join(self.cov_matrices_dir, self._generate_covariance_filename())
         if os.path.isfile(filename):
             sigma = np.loadtxt(filename)
         else:
             sigma = self.covariance_matrix()
             if self.save_cov_matrix:
-                os.makedeirs(self.self.cov_matrices_dir, exist_ok=True)
+                os.makedirs(self.cov_matrices_dir, exist_ok=True)
                 np.savetxt(filename, sigma)
         return sigma
     
