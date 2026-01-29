@@ -5,7 +5,7 @@ from mpmath import hyper
 from .TFBM import TFBM
 
 class TFBM2(TFBM):
-
+    """ Class representing generator of TFBM II process (doi: 10.1016/j.spl.2017.08.015) """
     def __init__(self, T, N, H, lambd, method="davies-harte"):
         super().__init__(T, N, H, lambd, method)
         self.cov_matrices_dir = "cov_matrices_tfbm2"

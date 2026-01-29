@@ -3,7 +3,7 @@ import numpy as np
 from scipy.special import gamma, kv
 
 class TFBM1(TFBM):
-
+    """ Class representing generator of TFBM I process (see doi:10.1016/j.spl.2013.06.016) """
     def __init__(self, T, N, H, lambd, method="davies-harte"):
         super().__init__(T, N, H, lambd, method)
         self.cov_matrices_dir = "cov_matrices_tfbm1"
