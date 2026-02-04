@@ -14,7 +14,7 @@ def setup_module():
 tfbm_generators = [TFBM1, TFBM2, TFBM3]
 tfbm_parameters = [(100, 10, 0.7, 0.3), (50, 112, 0.7, 0.3), (1, 900, 0.7, 0.3), (10, 100, 0.9, 2.0), (1, 100, 0.5, 0.5)]
 tfbm_param_with_extreme = [(1, 900, 0.3, 0.7), (50, 50, 2.3, 0.5), (40, 30, 3.3, 2.5)]
-methods = ["davies-harte", "cholesky"]
+methods = ["davies-harte", "cholesky", "wood-chan"]
 
 @pytest.mark.parametrize("tfbm_generator", tfbm_generators)
 @pytest.mark.parametrize("T, N, H, lambd", tfbm_parameters)
@@ -55,13 +55,8 @@ def test_covariance_matrix_ok(tfbm_generator):
     assert np.allclose(sigma, sigma.T)
 
 @pytest.mark.parametrize("tfbm_generator", tfbm_generators)
-def test_incremens_are_ok(tfbm_generator):
-    samples, increments = tfbm_generator(1, 100, 0.55, 0.1).generate_samples(50, get_increments=True)
+@pytest.mark.parametrize("method", methods)
+def test_incremens_are_ok(tfbm_generator, method):
+    samples, increments = tfbm_generator(1, 100, 0.55, 0.1, method=method).generate_samples(50, get_increments=True)
     increments_by_hand = np.diff(samples, axis=1)
     assert np.allclose(increments, increments_by_hand)
-    samples, increments = tfbm_generator(1, 100, 0.55, 0.1, method="cholesky").generate_samples(50, get_increments=True)
-    increments_by_hand = np.diff(samples, axis=1)
-    assert np.allclose(increments, increments_by_hand)
-
-
-
