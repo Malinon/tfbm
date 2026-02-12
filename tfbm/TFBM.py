@@ -1,7 +1,7 @@
 import numpy as np
 import os
 
-from approx import find_optimal_eigenvals, wood_chan_increments
+from .approx import find_optimal_eigenvals, wood_chan_increments
 
 
 class TFBM:
@@ -53,7 +53,7 @@ class TFBM:
             raise ValueError("Time horizon must be positive")
         if N <= 0:
             raise ValueError("Number of time steps must be positive integer")
-        allowed_methods = ["davies-harte", "cholesky"]
+        allowed_methods = ["davies-harte", "cholesky", "wood-chan"]
         if method not in allowed_methods:
             raise ValueError(f"Method must be one of {allowed_methods}")
 
@@ -74,13 +74,13 @@ class TFBM:
 
     def _load_cov_matrix(self):
         """ Loads covariance matrix of TFBM process from file """
-        filename = os.path.join(self.self.cov_matrices_dir, self._generate_covariance_filename())
+        filename = os.path.join(self.cov_matrices_dir, self._generate_covariance_filename())
         if os.path.isfile(filename):
             sigma = np.loadtxt(filename)
         else:
             sigma = self.covariance_matrix()
             if self.save_cov_matrix:
-                os.makedeirs(self.self.cov_matrices_dir, exist_ok=True)
+                os.makedirs(self.cov_matrices_dir, exist_ok=True)
                 np.savetxt(filename, sigma)
         return sigma
     
@@ -163,7 +163,6 @@ class TFBM:
             
             Z = np.random.normal(size=(self.n, num_of_samples)) # Generate an (n + 1) column vector of i.i.d. standard normal r.v.
             L = self._get_cholesky_decomposition()
-            
             # Perform sum 4.4 from Asmussen (It works, because L is lower triangular matrix)
             # and insert 0 at the beginning of each trajectory
             samples = np.transpose(np.insert(np.matmul(L,Z), 0, [0], axis=0))
@@ -172,6 +171,13 @@ class TFBM:
             samples = []
             increments = []
             cov_fun = lambda t: 0.5 * (self.ct_2(t * self.T + self.dt) - 2 * self.ct_2(t * self.T) + self.ct_2(abs(t *self.T - self.dt)))
+            try:
+                 embed_exp, eigenvals = find_optimal_eigenvals(cov_fun, self.max_embed_exponent, self.n, self.allow_approximation)
+            except ValueError:
+                 print(f"H: {self.H}, lambda: {self.lambd}")
+                 print("Switching to cholesky method")
+                 self.method = "cholesky"
+                 return self.generate_samples(num_of_samples, get_increments)
             embed_exp, eigenvals = find_optimal_eigenvals(cov_fun,  self.max_embed_exponent, self.n, self.allow_approximation)
             for _ in range(num_of_samples):
                 m = 2 ** embed_exp

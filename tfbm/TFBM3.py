@@ -10,12 +10,12 @@ class TFBM3(TFBM):
         self._exponent = 2 - 2 * self.H
     
     def _validate_parameters(self, T, N, H, lambd, method):
-        """ Validates parameters of TFBM1 process """
+        """ Validates parameters of TFBM3 process """
         super()._validate_parameters(T, N, H, lambd, method)
         if H >= 1 or H < 0.5:
             raise ValueError("Hurst exponent must be in [0.5, 1) for TFBM III")
 
     def ct_2(self, t):
         # Assumption k_B  * T / (m * gamma_H) = 1
-        return 2 *  t**(self._exponent) * mittag_leffer(self.H, -t / self.lambd)
+        return 2 *  t**(self._exponent) * float(mittag_leffer(self.H, -t / self.lambd))
     
