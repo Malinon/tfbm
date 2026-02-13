@@ -1,3 +1,4 @@
 build/
 html/
 */__pycache__/
+USECASES/fracture_flow/res/
