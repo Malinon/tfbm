@@ -12,7 +12,8 @@ import pystencils as ps
 from lbmpy.session import *
 
 # adjust the path to import TFB files
-sys.path.append("/home/barman/tfbm")
+# sys.path.append("/home/barman/tfbm")
+sys.path.append("/home/dstrzelczyk/tfbm")
 
 from tfbm import TFBM1, TFBM2, TFBM3
 
@@ -94,7 +95,7 @@ for i_SAMPLE in range(N_SAMPLES):
     # a.set_aspect("equal")
     # plt.show()
 
-
+    
 
     # ================= ACTUAL LBM SIMULATION =====================
 
@@ -110,7 +111,7 @@ for i_SAMPLE in range(N_SAMPLES):
     print("Running with:\ntau+ = "+str(tau_p)+"\ntau- = "+str(tau_m)+"\nLambda = "+str(Lambda))
 
     lbm_config = LBMConfig(stencil=Stencil.D2Q9, method=Method.TRT, relaxation_rates=[relaxation_rate_e, relaxation_rate_o])
-    config = CreateKernelConfig(target=Target.CPU,cpu_openmp=True,cpu_vectorize_info=None)
+    config = CreateKernelConfig(target=ps.Target.CPU,cpu_openmp=True,cpu_vectorize_info=None)
 
     sc = LatticeBoltzmannStep(domain_size=(width,height),
                             lbm_config=lbm_config,
@@ -128,13 +129,21 @@ for i_SAMPLE in range(N_SAMPLES):
             ret[-1,j] = ret[-2,j]
         return ret
 
-    outflow = ExtrapolationOutflow((0,1), sc.method)
+    def inflow_vel_callback(boundary_data, vx_in=.0, **_):
+            boundary_data['vel_0'] = vx_in
+            boundary_data['vel_1'] = 0
 
+    outflow = ExtrapolationOutflow((0,1), sc.method)
+    inflow = UBB(inflow_vel_callback, dim=sc.method.dim)
+    
+    sc.boundary_handling.set_boundary(inflow, make_slice[0, :])
     sc.boundary_handling.set_boundary(outflow, make_slice[-1, :])
 
     no_slip_obj = NoSlip()
     sc.boundary_handling.set_boundary(no_slip_obj, mask_callback=fracture_geometry_callback)
 
+    # dummy timestep for the inflow BC to be successfully reinitialized for the first Re
+    sc.run(1)
     
     # --- run sims for a range of Re
     Re_range = [pow(10.0,a) for a in np.arange(-3,4,0.125)]
@@ -142,14 +151,9 @@ for i_SAMPLE in range(N_SAMPLES):
 
         velocity_inlet = Re * (tau_p-0.5)/3. / ( len(wall[0,:]) - sum(wall[0,:]) )
 
+        sc.boundary_handling.trigger_reinitialization_of_boundary_data(vx_in=velocity_inlet)
+
         print("\n----> Running i_SAMPLE = "+str(i_SAMPLE)+" for Re = "+str(Re)+" (v_in = "+str(velocity_inlet)+")")
-
-        def inflow_vel_callback(boundary_data, activate=True, **_):
-            boundary_data['vel_0'] = velocity_inlet
-            boundary_data['vel_1'] = 0
-
-        inflow = UBB(inflow_vel_callback, dim=sc.method.dim)
-        sc.boundary_handling.set_boundary(inflow, make_slice[0, :])
         
         q_prev = 1e10
         q = 1
@@ -160,11 +164,11 @@ for i_SAMPLE in range(N_SAMPLES):
         # --- TIMESTEPPING FOR CURRENT RAYNOLDS NUMBER
         while q_diff > 1e-6 and it < it_max:
             sc.run(it_interval)
+            it+=it_interval
             q_prev = q
             q = sum([sc.velocity[int(width/2), i, 0].compressed()[0] for i in range(len(sc.velocity[int(width/2), :, 0])) if len(sc.velocity[int(width/2), i, 0].compressed())==1])
             q_diff = abs((q_prev-q)/q)
             print("      it = "+str(it)+" | q_diff = "+str(q_diff))
-            it+=it_interval
 
         # -- calcualte the final measures
         vx_integral = .0
@@ -220,3 +224,4 @@ for i_SAMPLE in range(N_SAMPLES):
         plt.ylim(-1,height+1)
         plt.colorbar()
         plt.savefig(save_path+"SAMPLE_"+str(i_SAMPLE)+"_Re"+str(Re)+".pdf")
+        plt.close()
