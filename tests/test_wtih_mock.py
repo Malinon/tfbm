@@ -6,15 +6,21 @@ from tfbm import TFBM1, TFBM2, TFBM3
 from brownian import BrownianMotion
 
 methods = ["davies-harte", "cholesky", "wood-chan"]
+pytestmark = pytest.mark.parametrize("method", methods)
 
-class TestNumpyPatching(unittest.TestCase):
+class TestNumpyPatching:
     
-    @pytest.mark.parametrize("method", methods)
     @patch('numpy.random.normal')
     def test_patch_zero_randoms_result_in_zero_trajectories(self, mock_rand, method):
         """Test patching numpy.random.rand function"""
         # Set up mock return value
         def side_effect_func(*args, **kwargs): 
+            print("Args", args)
+            print("Kwargs", kwargs) 
+            if "size" in kwargs:
+                size = kwargs["size"]
+                return np.zeros(size)
+
             if len(args) == 3:
                 return np.array([0.0] * args[2])
             else:
@@ -25,12 +31,15 @@ class TestNumpyPatching(unittest.TestCase):
             trajs = tfbm_type(1, 100, 0.55, 0.1, method=method).generate_samples(50)
             np.testing.assert_array_equal(trajs, np.zeros((50, 101)))
     
-    @pytest.mark.parametrize("method", methods)
+
     @patch('numpy.random.normal')
     def test_patch_dependence_on_random_is_multiplicative(self, mock_rand, method):
         """Test patching numpy.random.rand function"""
         # Set up mock return value
-        def side_effect_func(*args, **kwargs): 
+        def side_effect_func(*args, **kwargs):
+            if "size" in kwargs:
+                size = kwargs["size"]
+                return np.ones(size)
             if len(args) == 3:
                 return np.array([1.0] * args[2])
             else:
@@ -39,6 +48,9 @@ class TestNumpyPatching(unittest.TestCase):
         mock_rand.side_effect = side_effect_func
         trajs = TFBM1(1, 100, 0.55, 0.1, method=method).generate_samples(1)
         def side_effect_func_new(*args, **kwargs): 
+            if "size" in kwargs:
+                size = kwargs["size"]
+                return np.ones(size) * 3
             if len(args) == 3:
                 return np.array([3.0] * args[2])
             else:
@@ -50,7 +62,7 @@ class TestNumpyPatching(unittest.TestCase):
         np.testing.assert_allclose(3 * trajs, trajs_twice)
 
     @patch('numpy.random.normal')
-    def test_patch_dependence_on_eigenvals_is_sqrt(self, mock_rand):
+    def test_patch_dependence_on_eigenvals_is_sqrt(self, mock_rand, method):
         size=100
         def side_effect_func(*args, **kwargs): 
             if len(args) == 3:
@@ -64,12 +76,15 @@ class TestNumpyPatching(unittest.TestCase):
         increments_four = TFBM1(1, size, 0.55, 0.1)._generate_dh_increments(eigenvals_four)
         np.testing.assert_allclose(2 * increments_one, increments_four)
     
-    @pytest.mark.parametrize("method", methods)
+
     @patch('numpy.random.normal')
     def test_when_randomness_is_eliminated_all_trajectories_are_identical(self, mock_rand, method):
         """Test patching numpy.random.rand function"""
         # Set up mock return value
         def side_effect_func(*args, **kwargs): 
+            if "size" in kwargs:
+                size = kwargs["size"]
+                return np.ones(size)
             if len(args) == 3:
                 return np.array([1.0] * args[2])
             else:
