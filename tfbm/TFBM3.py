@@ -17,5 +17,5 @@ class TFBM3(TFBM):
 
     def ct_2(self, t):
         # Assumption k_B  * T / (m * gamma_H) = 1
-        return 2 *  t**(self._exponent) * mittag_leffer(self.H, -t / self.lambd)
+        return 2 *  t**(self._exponent) * float(mittag_leffer(self.H, -t / self.lambd))
     

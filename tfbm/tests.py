@@ -17,11 +17,11 @@ def _generalized_chi_square_samples(eigenvalues, num_samples):
 
 def _compute_covariance_matrix(tfbm_type, H_0, lambda_0, N, T):
     if tfbm_type == "1":
-        tfbm = TFBM1(H=H_0, lambd=lambda_0, T=T, n=N-1)
+        tfbm = TFBM1(H=H_0, lambd=lambda_0, T=T, N=N-1)
     elif tfbm_type == "2":
-        tfbm = TFBM2(H=H_0, lambd=lambda_0, T=T, n=N-1)
+        tfbm = TFBM2(H=H_0, lambd=lambda_0, T=T, N=N-1)
     elif tfbm_type == "3":
-        tfbm = TFBM3(H=H_0, lambd=lambda_0, T=T, n=N-1)
+        tfbm = TFBM3(H=H_0, lambd=lambda_0, T=T, N=N-1)
     else:
         raise ValueError("Invalid TFBM type. Must be '1', '2', or '3'.")
     return tfbm.covariance_matrix()
@@ -72,7 +72,7 @@ def _get_dma(trajectory, lag):
     dma = np.mean(detrended_trajectory**2)
     return dma
 
-def _quadratic_form_test(eigenvalues, test_statistic, monte_carlo_steps):
+def quadratic_form_test(eigenvalues, test_statistic, monte_carlo_steps):
     num_samples = monte_carlo_steps
     gen_samples = _generalized_chi_square_samples(eigenvalues, num_samples)
     less_eq_count = np.sum(gen_samples >= test_statistic) / num_samples
@@ -82,21 +82,23 @@ def _quadratic_form_test(eigenvalues, test_statistic, monte_carlo_steps):
         p_value = 2 * (1 - less_eq_count)
     return p_value
 
-def _common_quadratic_test_subroutine(stat_matrix, test_statistic, cov_matrix, monte_carlo_steps):
+def common_quadratic_test_subroutine(stat_matrix, test_statistic, cov_matrix, monte_carlo_steps):
     sqrt_cov_matrix = sqrtm(cov_matrix)
     eigenvals = np.linalg.eigvalsh(sqrt_cov_matrix @ stat_matrix @ sqrt_cov_matrix)
-    p_value = _quadratic_form_test(eigenvals, test_statistic, monte_carlo_steps)
+    #print("Eigenvalues of the matrix in the quadratic form:", eigenvals)
+    p_value = quadratic_form_test(eigenvals, test_statistic, monte_carlo_steps)
     return p_value
 
-def _general_quadratic_form_test(matrix_gen, trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps):
+def _general_quadratic_form_test(matrix_gen, trajectory, tfbm_type, H_0, lambda_0, lag, T, monte_carlo_steps):
     N = len(trajectory)
     stat_matrix = matrix_gen(N, lag=lag)
     test_statistic = trajectory.T @ stat_matrix @ trajectory
-    cov_matrix = _compute_covariance_matrix(tfbm_type, H_0, lambda_0, N)
-    p_value = _common_quadratic_test_subroutine(stat_matrix, test_statistic, cov_matrix, monte_carlo_steps)
+    cov_matrix = _compute_covariance_matrix(tfbm_type, H_0, lambda_0, N, T)
+    #print("Test statistic:", test_statistic)
+    p_value = common_quadratic_test_subroutine(stat_matrix, test_statistic, cov_matrix, monte_carlo_steps)
     return p_value
 
-def tamsd_test(trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps=1000):
+def tamsd_test(trajectory, tfbm_type, H_0, lambda_0, lag, T, monte_carlo_steps=1000):
     """
     Statistical test based on time-averaged mean squared displacement (TAMSD), described in https://doi.org/10.1063/5.0044878
     Null hypothesis: trajectory is TFBM of type tfbm_type with parameters H and lambd (λ),
@@ -119,9 +121,9 @@ def tamsd_test(trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps=1000
     monte_carlo_steps : int, optional
         The number of Monte Carlo samples to use for estimating the p-value (default is 1000)
     """
-    return _general_quadratic_form_test(_tamsd_matrix, trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps)
+    return _general_quadratic_form_test(_tamsd_matrix, trajectory, tfbm_type, H_0, lambda_0, lag, T, monte_carlo_steps)
 
-def avcf_test(trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps=1000):
+def avcf_test(trajectory, tfbm_type, H_0, lambda_0, lag, T, monte_carlo_steps=1000):
     """
     Statistical test based on sample autocovariance function, described in https://doi.org/10.1063/5.0044878
     Null hypothesis: trajectory is TFBM of type tfbm_type with parameters H and lambd (λ),
@@ -144,7 +146,7 @@ def avcf_test(trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps=1000)
     monte_carlo_steps : int, optional
         The number of Monte Carlo samples to use for estimating the p-value (default is 1000)
     """
-    return _general_quadratic_form_test(_acvf_matrix, trajectory, tfbm_type, H_0, lambda_0, lag, monte_carlo_steps)
+    return _general_quadratic_form_test(_acvf_matrix, trajectory, tfbm_type, H_0, lambda_0, lag, T, monte_carlo_steps)
 
 def dma_test(trajectory, tfbm_type, H, lambd, lag, T, monte_carlo_steps=1000):
     """
@@ -172,4 +174,4 @@ def dma_test(trajectory, tfbm_type, H, lambd, lag, T, monte_carlo_steps=1000):
     N = len(trajectory)
     stat_matrix = np.identity(N - lag + 1) / (N - lag + 1)
     test_statistic = _get_dma(trajectory, lag)
-    return _common_quadratic_test_subroutine(stat_matrix, test_statistic, _dma_covariance(tfbm_type, H, lambd, N, T, lag), monte_carlo_steps)
+    return common_quadratic_test_subroutine(stat_matrix, test_statistic, _dma_covariance(tfbm_type, H, lambd, N, T, lag), monte_carlo_steps)
