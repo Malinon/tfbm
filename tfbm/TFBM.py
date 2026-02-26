@@ -6,9 +6,9 @@ from .approx import find_optimal_eigenvals, wood_chan_increments
 
 class TFBM:
     """ Abstract class representing generator of TFBM process """
-    def __init__(self, T, N, H, lambd, method="davies-harte", save_cov_matrix=True, allow_approximation=False, max_embed_exponent=1):
-        """"
-        Parameters:
+    def __init__(self, T:float, N:int, H:float, lambd:float, method:str="davies-harte", save_cov_matrix:bool=True, allow_approximation:bool=False, max_embed_exponent:int=1):
+        """
+
         T: float
             Time horizon
         N: int
@@ -18,9 +18,13 @@ class TFBM:
         lambd: float
             Tempering parameter
         method: str
-            Method of generating TFBM process
+            Method of generating TFBM process ("davies-harte", "cholesky", "wood-chan")
         save_cov_matrix: bool
             Whether to save covariance matrix to file or not (in Cholesky method)
+        allow_approximation: bool
+            Whether to allow approximation in Wood-Chan method (if exact embedding is not possible)
+        max_embed_exponent: int
+            Maximum exponent for embedding in Wood-Chan method. (Shape of embedded matrix will be (2^max_embed_exponent, 2^max_embed_exponent))
         """
         self._validate_parameters(T, N, H, lambd, method)
         ## Hurst exponent
@@ -43,7 +47,7 @@ class TFBM:
         self.max_embed_exponent = max_embed_exponent
         
     
-    def _validate_parameters(self, T, N, H, lambd, method):
+    def _validate_parameters(self, T:float, N:int, H:float, lambd:float, method:str):
         """ Validates parameters of TFBM process """
         if H <= 0:
             raise ValueError("Hurst exponent must be positive")
@@ -57,8 +61,8 @@ class TFBM:
         if method not in allowed_methods:
             raise ValueError(f"Method must be one of {allowed_methods}")
 
-    def covariance_matrix(self):
-        """ Generates covariance matrix of TFBM process """
+    def covariance_matrix(self) -> np.ndarray:
+        """ Generates covariance matrix of TFBM process, K[i,j] = cov(X(t_i), X(t_j)), i,j = 0, ..., N """
         sigma = np.zeros((len(self.ts), len(self.ts))) # Covariance matrix buffer
         ct_2_values = [float(self.ct_2(t)) for t in self.ts]
         for t in range(len(self.ts)):
@@ -66,13 +70,13 @@ class TFBM:
                 sigma[t,s] = (ct_2_values[t] + ct_2_values[s] - ct_2_values[abs(t-s)]) / 2
         return sigma
     
-    def _generate_covariance_filename(self):
+    def _generate_covariance_filename(self) -> str:
         """ Generates filename for covariance matrix of TFBM process """
         h_str = str(self.H).replace('.', '_')
         l_str = str(self.lambd).replace('.', '_')
         return f"H_{h_str}_l_{l_str}_T_{str(self.T)}_N_{str(self.n)}.txt"
 
-    def _load_cov_matrix(self):
+    def _load_cov_matrix(self) -> np.ndarray:
         """ Loads covariance matrix of TFBM process from file """
         filename = os.path.join(self.cov_matrices_dir, self._generate_covariance_filename())
         if os.path.isfile(filename):
@@ -84,7 +88,7 @@ class TFBM:
                 np.savetxt(filename, sigma)
         return sigma
     
-    def _get_cholesky_decomposition(self):
+    def _get_cholesky_decomposition(self) -> np.ndarray:
         """ Returns Cholesky decomposition of covariance matrix of TFBM process
             If matix is already saved to file, it loads it from there """
         sigma = self._load_cov_matrix()
@@ -93,7 +97,7 @@ class TFBM:
         sigma = np.delete(sigma, 0, 1)
         return np.linalg.cholesky(sigma)
 
-    def _generate_dh_increments(self, eigenvals):
+    def _generate_dh_increments(self, eigenvals: np.ndarray) -> np.ndarray:
         Z_even = np.random.normal(0, 1, self.n - 1)
         Z_odd = np.random.normal(0, 1, self.n - 1)
 
@@ -108,10 +112,10 @@ class TFBM:
         X = np.real(np.fft.fft(Y) / np.sqrt(self.n * 2))[:self.n]
         return X
     
-    def _generate_row_of_cirulant_matrix(self):
+    def _generate_row_of_cirulant_matrix(self) -> np.ndarray:
         """ Generates row of circulant matrix which is used in Davies-Harte method """
         # Cache Ct_2 values
-        ct_2_values = [self.ct_2(t) for t in self.ts] + [self.ct_2(self.ts[-1] + self.dt)]
+        ct_2_values = [self._ct_2(t) for t in self.ts] + [self._ct_2(self.ts[-1] + self.dt)]
         autocovariance = lambda k: 0.5 * (ct_2_values[k + 1] - (2 * ct_2_values[k]) + ct_2_values[abs(k - 1)])
 
         row = np.zeros(2 * self.n)
@@ -123,15 +127,18 @@ class TFBM:
     
         return row
     
-    def generate_samples(self, num_of_samples, get_increments=False):
+    def generate_samples(self, num_of_samples:int, get_increments:bool=False) -> np.ndarray:
         """
         Generates samples of TFBM process
-        Parameters:
+        
+
         num_of_samples: int
             Number of samples to generate
         get_increments: bool
             Whether to return increments of the process along with samples
+
         Returns:
+
         samples: np.ndarray
             Generated samples of TFBM process (shape: (num_of_samples, N + 1))
         increments: np.ndarray
@@ -170,7 +177,7 @@ class TFBM:
         elif self.method == "wood-chan":
             samples = []
             increments = []
-            cov_fun = lambda t: 0.5 * (self.ct_2(t * self.T + self.dt) - 2 * self.ct_2(t * self.T) + self.ct_2(abs(t *self.T - self.dt)))
+            cov_fun = lambda t: 0.5 * (self._ct_2(t * self.T + self.dt) - 2 * self._ct_2(t * self.T) + self._ct_2(abs(t *self.T - self.dt)))
             try:
                  embed_exp, eigenvals = find_optimal_eigenvals(cov_fun, self.max_embed_exponent, self.n, self.allow_approximation)
             except ValueError:

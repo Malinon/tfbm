@@ -1,14 +1,14 @@
 import numpy as np
 
-def genereate_circulant_row(cov_fun, embed_exp:int, sample_size:int):
+def _genereate_circulant_row(cov_fun, embed_exp:int, sample_size:int):
     # Create first row of circulant matrix as descibed in equations (2.2)-(2.3) in Wood-Chan paper https://doi.org/10.1080/10618600.1994.10474655
     m =  2 ** embed_exp
     times = np.concatenate([np.arange(start = 0, stop=m//2), np.arange(start=m//2, stop=0, step=-1)]) / sample_size
     matrix_row = np.array([cov_fun(t) for t in times])
     return matrix_row
 
-def calculate_eigen_vals(cov_fun, embed_exp:int, sample_size:int):
-    return np.fft.fft(genereate_circulant_row(cov_fun, embed_exp, sample_size)).real
+def _calculate_eigen_vals(cov_fun, embed_exp:int, sample_size:int):
+    return np.fft.fft(_genereate_circulant_row(cov_fun, embed_exp, sample_size)).real
 
 def wood_chan_increments(m, sample_size, eigenvals):
     U = np.random.normal(0, 1, (m//2) - 1)
@@ -30,7 +30,7 @@ def find_optimal_eigenvals(cov_fun, max_embedding_exp:int, sample_size:int, appr
     print(f"Starting search for optimal embedding exponent from {embed_exp} up to {max_embedding_exp}")
     while embed_exp <= max_embedding_exp:
         print(f"Trying embedding exponent: {embed_exp}")
-        eigen_vals = calculate_eigen_vals(cov_fun, embed_exp, sample_size)
+        eigen_vals = _calculate_eigen_vals(cov_fun, embed_exp, sample_size)
         print("Eigenvalues for embedding exponent", eigen_vals)
         if np.all(eigen_vals >= 0):
             break
