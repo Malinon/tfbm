@@ -49,7 +49,7 @@ approximation method if the embedding is not positive definite.
 **Preparation time**: :math:`O(N \log N)`
 **Generation time**: :math:`O(N)`
 
-Assymptoics above do not take into account siz of final embedding. Size of the embedding can significantly affect the performance of the method.
+Assymptoics above do not take into account size of final embedding. Size of the embedding can significantly affect the performance of the method.
 
 **Limitations**: Embedding need to be positive defined for exact generation.    
 
