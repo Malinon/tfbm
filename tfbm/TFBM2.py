@@ -11,8 +11,8 @@ _EPSILON = 1e-10
 
 class TFBM2(TFBM):
     """ Class representing generator of TFBM II process (doi: 10.1016/j.spl.2017.08.015) """
-    def __init__(self, T, N, H, lambd, method="davies-harte", strategy="flexible"):
-        super().__init__(T, N, H, lambd, method)
+    def __init__(self, T, N, H, lambd, method="davies-harte", strategy="flexible", allow_approximation=False, max_embed_exponent=1):
+        super().__init__(T, N, H, lambd, method, allow_approximation, max_embed_exponent)
         self.cov_matrices_dir = "cov_matrices_tfbm2"    
         self._ct2_first_multiplicative =  (-2*gamma(self.H)*((self.lambd)**(-2*self.H))) / (np.sqrt(np.pi)*gamma(self.H-0.5))
         self._ct2_second_multiplicative = (gamma(1-self.H)) / (np.sqrt(np.pi) * self.H * (2**(2*self.H)) * gamma(self.H+0.5))
