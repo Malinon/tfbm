@@ -58,6 +58,21 @@ tfbm1 = tfbm.TFBM1(H=10, T=10, N=500, lambd=0.5)
 trajectories, increments = tfbm1.generate_samples(num_of_samples=100, get_increments=True)
 ```
 
+## Documentation
+
+To generate documentaion use Makefile
+
+```bash
+cd doc
+make html
+```
+
+Generation of the documentation requires sphinx and Reed The Docs Theme
+
+```bash
+pip install -U sphinx
+pip install sphinx_rtd_theme
+```
 
 
 ## References

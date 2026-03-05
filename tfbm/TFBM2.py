@@ -11,12 +11,41 @@ _EPSILON = 1e-10
 
 class TFBM2(TFBM):
     """ Class representing generator of TFBM II process (doi: 10.1016/j.spl.2017.08.015) """
-    def __init__(self, T, N, H, lambd, method="davies-harte", strategy="flexible", allow_approximation=False, max_embed_exponent=1):
-        super().__init__(T, N, H, lambd, method, allow_approximation, max_embed_exponent)
+    def __init__(self, T:float, N:int, H:float, lambd:float, method:str="davies-harte",  save_cov_matrix:bool=True, allow_approximation:bool=False, max_embed_exponent:int=None, strategy:str="flexible"):
+        """
+
+        T: float
+            Time horizon
+        N: int
+            Number of time steps
+        H: float
+            Hurst exponent
+        lambd: float
+            Tempering parameter
+        method: str
+            Method of generating TFBM process ("davies-harte", "cholesky", "wood-chan")
+        save_cov_matrix: bool
+            Whether to save covariance matrix to file or not (in Cholesky method)
+        allow_approximation: bool
+            Whether to allow approximation in Wood-Chan method (if exact embedding is not possible)
+        max_embed_exponent: int
+            Maximum exponent for embedding in Wood-Chan method. (Shape of embedded matrix will be (2^max_embed_exponent, 2^max_embed_exponent))
+        strategy: str
+            Strategy for computing ct_2 function, which is used for calculating covariance.
+                "flexible" (default) - uses a heuristic to determine whether which numerical integration to use for computing covariance\n
+                "fast" - always uses scipy.integration.quad for computing covariance, which is faster but may be less accurate for some parameters (small H)\n
+                "strict" - always uses mpmath.quadsubdiv for computing covariance, which is more accurate but slower
+        """
+        super().__init__(T, N, H, lambd, method, save_cov_matrix, allow_approximation, max_embed_exponent)
         self.cov_matrices_dir = "cov_matrices_tfbm2"    
         self._ct2_first_multiplicative =  (-2*gamma(self.H)*((self.lambd)**(-2*self.H))) / (np.sqrt(np.pi)*gamma(self.H-0.5))
         self._ct2_second_multiplicative = (gamma(1-self.H)) / (np.sqrt(np.pi) * self.H * (2**(2*self.H)) * gamma(self.H+0.5))
         self._lambd_squared = self.lambd ** 2
+        mantissa_H  = self.H - np.floor(self.H)
+        if mantissa_H < _EPSILON or 1 - mantissa_H < _EPSILON or np.abs(self.H - 0.5) < _EPSILON:
+            self.is_H_problematic = True
+        else:
+            self.is_H_problematic = False
 
         # Determine inegration strategy
         if strategy == "flexible":
@@ -35,7 +64,7 @@ class TFBM2(TFBM):
         return (( 2 * mp.sin(omega * t / 2) / omega) ** 2)  * np.pow((lambd**2) + (omega **2), 0.5 - H) / np.pi
 
     def _use_integration(self, t):
-        if np.abs(self.H - 0.5) < _EPSILON or np.ceil(self.H - self.H) < _EPSILON:
+        if self.is_H_problematic:
             # H = 0.5 and integer H are poles of terms in formula, so we need to use integration to compute ct_2
             return True
         if t * self.lambd > _LIMIT_FOR_FORMULA:
@@ -43,7 +72,6 @@ class TFBM2(TFBM):
             # which can lead to numerical instability. In such cases, we use integration to compute ct_2.
             return True
         return False
-
     
     def  _is_integral_problematic(self):
         if self.H  < 0.5:
@@ -51,7 +79,7 @@ class TFBM2(TFBM):
         # For big H integral is easy to compute because of fast decay of integrand
         return False
 
-    def ct_2(self, t):
+    def _ct_2(self, t):
         if self._use_integration(t):
             # Using standard formula is not numerically stable, so we compute ct_2 by integrating
             final_integrand = lambda omega: TFBM2._integrand(self.H, self.lambd, t, omega)
