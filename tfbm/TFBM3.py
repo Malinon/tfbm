@@ -4,8 +4,8 @@ from .mittag_leffer import mittag_leffer
 
 class TFBM3(TFBM):
     """ Class representing generator of TFBM III process (see doi:10.1088/1367-2630/aae4b2) """
-    def __init__(self, T, N, H, lambd, method="davies-harte"):
-        super().__init__(T, N, H, lambd, method)
+    def __init__(self, T, N, H, lambd, method="davies-harte", allow_approximation=False, max_embed_exponent=1):
+        super().__init__(T, N, H, lambd, method, allow_approximation, max_embed_exponent)
         self.cov_matrices_dir = "cov_matrices_tfbm3"
         self._exponent = 2 - 2 * self.H
     
@@ -17,5 +17,5 @@ class TFBM3(TFBM):
 
     def ct_2(self, t):
         # Assumption k_B  * T / (m * gamma_H) = 1
-        return 2 *  t**(self._exponent) * mittag_leffer(self.H, -t / self.lambd)
+        return 2 *  t**(self._exponent) * float(mittag_leffer(self.H, -t / self.lambd))
     
