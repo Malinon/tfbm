@@ -44,6 +44,8 @@ class TFBM:
         ## Time step size
         self.dt = self.ts[2] - self.ts[1]
         self.allow_approximation = allow_approximation
+        if max_embed_exponent is None:
+            max_embed_exponent = int(np.ceil(np.log2(self.n))) + 2
         self.max_embed_exponent = max_embed_exponent
         
     
@@ -64,7 +66,7 @@ class TFBM:
     def covariance_matrix(self) -> np.ndarray:
         """ Generates covariance matrix of TFBM process, K[i,j] = cov(X(t_i), X(t_j)), i,j = 0, ..., N """
         sigma = np.zeros((len(self.ts), len(self.ts))) # Covariance matrix buffer
-        ct_2_values = [float(self.ct_2(t)) for t in self.ts]
+        ct_2_values = [float(self._ct_2(t)) for t in self.ts]
         for t in range(len(self.ts)):
             for s in range(len(self.ts)):
                 sigma[t,s] = (ct_2_values[t] + ct_2_values[s] - ct_2_values[abs(t-s)]) / 2
@@ -187,10 +189,10 @@ class TFBM:
                  return self.generate_samples(num_of_samples, get_increments)
             for _ in range(num_of_samples):
                 m = 2 ** embed_exp
-                incr = wood_chan_increments(m, num_of_samples, eigenvals)
+                incr = wood_chan_increments(m, self.n, eigenvals)
                 increments.append(incr)
             increments = np.array(increments)
-            samples = np.cumsum(increments, axis=1)
+            samples = np.insert(np.cumsum(increments, axis=1), 0, 0, axis=1)
         if get_increments:
             return samples, increments
         else:
