@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 from scipy.stats import chi2
 
-from tfbm.tests import avcf_test, dma_test, tamsd_test, common_quadratic_test_subroutine
+from tfbm.tests import avcf_test, dma_test, tamsd_test, quadratic_stat_test
 from tfbm import TFBM1, TFBM2, TFBM3
 
 def _template_const_testing(test_function, test_name):
@@ -40,10 +40,10 @@ def test_quantiles_for_chi_squared_are_correct():
     cov_matrix = np.identity(sample_size)
     stat_matrix = np.identity(sample_size)
     chi_2_quantiles_big = chi2.ppf([0.7, 0.8, 0.9], df=degrees_of_freedom)
-    p_values = np.array([common_quadratic_test_subroutine(stat_matrix, q, cov_matrix, 1000) for q in chi_2_quantiles_big])
+    p_values = np.array([quadratic_stat_test(stat_matrix, q, cov_matrix, 1000) for q in chi_2_quantiles_big])
     pytest.approx((1 -chi_2_quantiles_big) * 2, p_values, abs=1e-1)
     chi_2_quantiles_small = chi2.ppf([0.1, 0.2, 0.3], df=degrees_of_freedom)
-    p_values = np.array([common_quadratic_test_subroutine(stat_matrix, q, cov_matrix, 1000) for q in chi_2_quantiles_small])
+    p_values = np.array([quadratic_stat_test(stat_matrix, q, cov_matrix, 1000) for q in chi_2_quantiles_small])
     pytest.approx(chi_2_quantiles_small / 2, p_values, abs=1e-1)
     
 def test_works_well_for_sum_of_squares_of_independent_vars():
@@ -53,5 +53,5 @@ def test_works_well_for_sum_of_squares_of_independent_vars():
     stat_matrix = np.identity(sample_size)
     test_statistic = np.sum(np.random.normal(0, 1, sample_size)**2)
 
-    p_value = common_quadratic_test_subroutine(stat_matrix, test_statistic, cov_matrix, 1000)
+    p_value = quadratic_stat_test(stat_matrix, test_statistic, cov_matrix, 1000)
     assert p_value >= 0.1

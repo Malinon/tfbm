@@ -19,7 +19,7 @@ def test_fail_when_approximation_not_allowed():
 def test_wood_chan_works(tfbm_class):
     traj_length = 100
     gen=tfbm_class(1, traj_length, 0.75, 0.1)
-    covariance_function = lambda t: 0.5 * (gen.ct_2(t * gen.T + gen.dt) - 2 * gen.ct_2(t * gen.T) + gen.ct_2(abs(t *gen.T - gen.dt)))
+    covariance_function = lambda t: 0.5 * (gen._ct_2(t * gen.T + gen.dt) - 2 * gen._ct_2(t * gen.T) + gen._ct_2(abs(t *gen.T - gen.dt)))
     trajectory, increments = wood_chan(covariance_function, 7, traj_length, approximate=False)
     assert trajectory.shape == (traj_length,)
     assert increments.shape == (traj_length,)
@@ -33,7 +33,7 @@ def test_looking_for_optimal_eigenvals_works(tfbm_class):
     def cov_func(t):
         nonlocal counter
         if counter >= traj_length:
-            return 0.5 * (gen.ct_2(t * gen.T + gen.dt) - 2 * gen.ct_2(t * gen.T) + gen.ct_2(abs(t *gen.T - gen.dt)))
+            return 0.5 * (gen._ct_2(t * gen.T + gen.dt) - 2 * gen._ct_2(t * gen.T) + gen._ct_2(abs(t *gen.T - gen.dt)))
         else:
             counter += 1
             return -1

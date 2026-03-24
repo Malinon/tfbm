@@ -6,5 +6,5 @@ class BrownianMotion(TFBM):
         super().__init__(T, N, H, lambd, method)
         self.cov_matrices_dir = "cov_matrices_brownian"
 
-    def ct_2(self, t):
+    def _ct_2(self, t):
         return t
