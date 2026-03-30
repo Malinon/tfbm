@@ -95,8 +95,8 @@ Generation of the documentation requires sphinx and Read The Docs Theme:
 References
 ----------
 
-.. [1] M. M. Meerschaert and F. Sabzikar. Tempered fractional Brownian motion. Statistics & Probability Letters, 83(10):2269–2275, 2013. `doi:10.1016/j.spl.2013.06.016 <https://doi.org/10.1016/j.spl.2013.06.016>`_
+.. [1] M\. M\. Meerschaert and F. Sabzikar. Tempered fractional Brownian motion. Statistics & Probability Letters, 83(10):2269–2275, 2013. `doi:10.1016/j.spl.2013.06.016 <https://doi.org/10.1016/j.spl.2013.06.016>`_
 
-.. [2] F. Sabzikar and D. Surgailis. Tempered fractional Brownian and stable motions of second kind. Statistics & Probability Letters, 132:17–27, 2018. `doi: 10.1016/j.spl.2017.08.015 <https://doi.org/10.1016/j.spl.2017.08.015>`_
+.. [2] F\. Sabzikar and D. Surgailis. Tempered fractional Brownian and stable motions of second kind. Statistics & Probability Letters, 132:17–27, 2018. `doi: 10.1016/j.spl.2017.08.015 <https://doi.org/10.1016/j.spl.2017.08.015>`_
 
-.. [3] D. Molina-Garcia, T. Sandev, H. Safdari, G. Pagnini, A. Chechkin, and R. Metzler. Crossover from anomalous to normal diffusion: truncated power-law noise correlations and applications to dynamics in lipid bilayers. New Journal of Physics 20, page 103027, 2018. `doi: 10.1088/1367-2630/aae4b2 <https://doi.org/10.1088/1367-2630/aae4b2>`_
+.. [3] D\. Molina-Garcia, T. Sandev, H. Safdari, G. Pagnini, A. Chechkin, and R. Metzler. Crossover from anomalous to normal diffusion: truncated power-law noise correlations and applications to dynamics in lipid bilayers. New Journal of Physics 20, page 103027, 2018. `doi: 10.1088/1367-2630/aae4b2 <https://doi.org/10.1088/1367-2630/aae4b2>`_
