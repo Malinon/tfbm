@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from tfbm import TFBM1, TFBM2, TFBM3
+from pytfbm import TFBM1, TFBM2, TFBM3
 import os
 import glob
 

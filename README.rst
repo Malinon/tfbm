@@ -1,4 +1,4 @@
-tfbm
+pytfbm
 ====
 
 Package for simulating tempered fractional Brownian motions described in [1]_, [2]_, [3]_.
@@ -61,18 +61,18 @@ You can install the package using following commands:
 
 .. code-block:: bash
 
-    git clone https://github.com/Malinon/tfbm
-    pip install ./tfbm
+    git clone https://github.com/Malinon/pytfbm
+    pip install ./pytfbm
 
 Example usage
 -------------
 
 .. code-block:: python
 
-    import tfbm
+    import pytfbm
 
     # Create generator of TFBM I 
-    tfbm1 = tfbm.TFBM1(H=10, T=10, N=500, lambd=0.5)
+    tfbm1 = pytfbm.TFBM1(H=10, T=10, N=500, lambd=0.5)
     trajectories, increments = tfbm1.generate_samples(num_of_samples=100, get_increments=True)
 
 Documentation

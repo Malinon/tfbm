@@ -81,15 +81,15 @@ You can install the package using the following commands:
 
 .. code-block:: bash
 
-   git clone https://github.com/Malinon/tfbm
-   pip install ./tfbm
+   git clone https://github.com/Malinon/pytfbm
+   pip install ./pytfbm
 
 Usage Example
 --------------
 
 .. code-block:: python
 
-   from tfbm import TFBM1
+   from pytfbm import TFBM1
    import numpy as np
    import matplotlib.pyplot as plt
    
@@ -130,10 +130,10 @@ API Reference
    :maxdepth: 2
    :caption: API:
    
-   modules/tfbm
-   modules/tfbm1
-   modules/tfbm2  
-   modules/tfbm3
+   modules/pytfbm
+   modules/pytfbm1
+   modules/pytfbm2  
+   modules/pytfbm3
    modules/tests
 
 

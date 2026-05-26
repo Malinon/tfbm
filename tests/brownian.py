@@ -1,4 +1,4 @@
-from tfbm import TFBM
+from pytfbm import TFBM
 
 
 class BrownianMotion(TFBM):

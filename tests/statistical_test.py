@@ -4,8 +4,8 @@ import numpy as np
 from scipy.stats import kstest
 from scipy.stats import norm
 
-from tfbm import TFBM1, TFBM2, TFBM3
-from tfbm.tests import avcf_test, dma_test, tamsd_test
+from pytfbm import TFBM1, TFBM2, TFBM3
+from pytfbm.tests import avcf_test, dma_test, tamsd_test
 
 from brownian import BrownianMotion
 

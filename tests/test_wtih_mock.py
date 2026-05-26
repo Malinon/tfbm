@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch
 import numpy as np
 import pytest
-from tfbm import TFBM1, TFBM2, TFBM3
+from pytfbm import TFBM1, TFBM2, TFBM3
 from brownian import BrownianMotion
 
 methods = ["davies-harte", "cholesky", "wood-chan"]
