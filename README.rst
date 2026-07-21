@@ -1,5 +1,5 @@
 pytfbm
-====
+===========
 
 Package for simulating tempered fractional Brownian motions described in [1]_, [2]_, [3]_.
 
@@ -16,9 +16,9 @@ where
 
 .. math::
 
-    g^{I}_{H,\lambda,t}(s) := \left[(t - s)_{+}^{H- \frac{1}{2}} e^{\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{\lambda(-s)_{+}}\right], \quad s \in \mathbb{R}
+    g^{I}_{H,\lambda,t}(s) := \left[(t - s)_{+}^{H- \frac{1}{2}} e^{-\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{-\lambda(-s)_{+}}\right], \quad s \in \mathbb{R}
 
-is called a tempered fractional Brownian motion (TFBM I)
+is called a tempered fractional Brownian motion of the first kind (TFBM I)
 
 TFBM II
 -------
@@ -33,7 +33,7 @@ where
 
 .. math::
 
-    g^{II}_{H,\lambda,t}(s) := (t - s)_{+}^{H- \frac{1}{2}} e^{\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{\lambda(-s)_{+}} + \lambda \int_{0}^{t} (u - s)_{+}^{H- \frac{1}{2}} e^{\lambda(u-s)_{+}} du, \quad s \in \mathbb{R},
+    g^{II}_{H,\lambda,t}(s) := (t - s)_{+}^{H- \frac{1}{2}} e^{-\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{-\lambda(-s)_{+}} + \lambda \int_{0}^{t} (u - s)_{+}^{H- \frac{1}{2}} e^{-\lambda(u-s)_{+}} du, \quad s \in \mathbb{R},
 
 is called a tempered fractional Brownian motion of the second kind (TFBM II).
 
@@ -61,8 +61,8 @@ You can install the package using following commands:
 
 .. code-block:: bash
 
-    git clone https://github.com/Malinon/pytfbm
-    pip install ./pytfbm
+    git clone https://github.com/Malinon/tfbm
+    pip install ./tfbm
 
 Example usage
 -------------
