@@ -4,9 +4,9 @@ TFBM Base Class
 Overview
 --------
 
-The :class:`tfbm.TFBM.TFBM` class serves as the abstract base class for all tempered fractional Brownian motion implementations. It provides common functionality and defines the interface that specific TFBM types must implement.
+The :class:`pytfbm.TFBM.TFBM` class serves as the abstract base class for all tempered fractional Brownian motion implementations. It provides common functionality and defines the interface that specific TFBM types must implement.
 
-.. automodule:: tfbm.TFBM
+.. automodule:: pytfbm.TFBM
    :members:
    :undoc-members:
 

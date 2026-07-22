@@ -9,7 +9,7 @@ If the process can not be generated using Davies-Harte/Wood-Chan methods, then C
 If all exact methods fail, then approximate version of Wood-Chan method can be used.
 
 Simulation of the trajectorey can be divieded into two steps: preparation step and generation step.
-Preparation stes is performed only once, while generation step is performed for each generated trajectory.
+Preparation step is performed only once, while generation step is performed for each generated trajectory.
 Therefore generation multiple trajectories at once can significantly reduce the average time of generating a single trajectory, as the preparation step is performed only once.
 
 

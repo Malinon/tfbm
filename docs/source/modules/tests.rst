@@ -15,3 +15,10 @@ are provided. In addition a general function for performing quadratic form tests
    :undoc-members:
    :show-inheritance:
    :no-index:
+
+
+
+References
+----------
+
+.. [1] Balcerek M., Burnecki K., Sikora G., and Wyłomańska A. (2021). "Discriminating Gaussian processes via quadratic form statistics." *Chaos*, 31(6):063101

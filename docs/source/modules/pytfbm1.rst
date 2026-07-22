@@ -4,7 +4,7 @@ TFBM1 Class
 Overview
 --------
 
-The :class:`tfbm.TFBM1.TFBM1` class implements tempered fractional Brownian motion of the first kind (TFBM I).
+The :class:`pytfbm.TFBM1.TFBM1` class implements tempered fractional Brownian motion of the first kind (TFBM I).
 
 Mathematical Definition
 -----------------------
@@ -21,7 +21,7 @@ where the kernel function is:
 
    g^I_{H,\lambda,t}(s) = (t-s)_+^{H-1/2} e^{-\lambda(t-s)_+} - (-s)_+^{H-1/2} e^{-\lambda(-s)_+}
 
-.. automodule:: tfbm.TFBM1
+.. automodule:: pytfbm.TFBM1
    :members:
    :undoc-members:
    :show-inheritance:
@@ -39,7 +39,7 @@ TFBM I has specific parameter constraints:
 Generation Methods
 ------------------
 
-The TFBM class allows for generation of TFBM samples using Cholesky, Davies-Harte, Wood-Chan methods.
+The TFBM1 class allows for generation of TFBM 1 samples using Cholesky, Davies-Harte, Wood-Chan methods.
 Details on these methods can be found in :doc:`../numerical`.
 
 References
