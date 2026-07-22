@@ -94,7 +94,7 @@ class TFBM:
         """ Returns Cholesky decomposition of covariance matrix of TFBM process
             If matix is already saved to file, it loads it from there """
         sigma = self._load_cov_matrix()
-        # It looks ok, but discuss with advisor about this fragment
+        # We are simulating TFBM for T > 0, so we can remove first row and column of covariance matrix, because they are all zeros (cov(X(0), X(t)) = 0 for all t)
         sigma = np.delete(sigma, 0, 0)
         sigma = np.delete(sigma, 0, 1)
         return np.linalg.cholesky(sigma)
@@ -170,7 +170,7 @@ class TFBM:
         elif self.method == "cholesky":
             # Generate samples using Cholesky method
             
-            Z = np.random.normal(size=(self.n, num_of_samples)) # Generate an (n + 1) column vector of i.i.d. standard normal r.v.
+            Z = np.random.normal(size=(self.n, num_of_samples)) # Generate an (N, num_of_samples) matrix of i.i.d. standard normal r.v.
             L = self._get_cholesky_decomposition()
             # Perform sum 4.4 from Asmussen (It works, because L is lower triangular matrix)
             # and insert 0 at the beginning of each trajectory
