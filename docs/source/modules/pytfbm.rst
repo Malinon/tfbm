@@ -4,9 +4,9 @@ TFBM Base Class
 Overview
 --------
 
-The :class:`tfbm.TFBM.TFBM` class serves as the abstract base class for all tempered fractional Brownian motion implementations. It provides common functionality and defines the interface that specific TFBM types must implement.
+The :class:`pytfbm.TFBM.TFBM` class serves as the abstract base class for all tempered fractional Brownian motion implementations. It provides common functionality and defines the interface that specific TFBM types must implement.
 
-.. automodule:: tfbm.TFBM
+.. automodule:: pytfbm.TFBM
    :members:
    :undoc-members:
 
@@ -35,5 +35,5 @@ Subclass Requirements
 
 Each TFBM subclass must:
 
-   1. implement **ct_2(self, t)**: The function used for calculating covariance according to formula cov(X(t), X(s)) = 0.5 * (ct_2(t) + ct_2(s) - ct_2(|t-s|))
+   1. implement **ct_2(self, t)**: The function used for calculating covariance according to formula :math: `cov(X(t), X(s)) = 0.5 * (ct_2(t) + ct_2(s) - ct_2(|t-s|))`
    2. define **cov_matrices_dir**: Directory for storing covariance matrices (if save_cov_matrix is True)

@@ -2,7 +2,7 @@ import pytest
 import scipy.special as sc
 import numpy as np
 import sys
-sys.path.append("../tfbm")  # Adjust path to import from parent directory
+sys.path.append("../pytfbm")  # Adjust path to import from parent directory
 from mittag_leffer import gamma_inc
 from mittag_leffer import mittag_leffer as ml
 

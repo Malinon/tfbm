@@ -84,7 +84,7 @@ html_theme_options = {
 html_context = {
     "display_github": True,
     "github_user": "Malinon",
-    "github_repo": "tfbm",
+    "github_repo": "pytfbm",
     "github_version": "main",
     "conf_py_path": "/docs/source/",
 }

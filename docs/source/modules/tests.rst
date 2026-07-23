@@ -1,5 +1,5 @@
 Quadratic Form Tests 
-============
+=====================
 
 This module provides tests for tempered fractional Brownian motion based on quadratic form statistics.
 Implementations of these tests using
@@ -10,7 +10,15 @@ Implementations of these tests using
 
 are provided. In addition a general function for performing quadratic form tests based on any quadratc form statistic and covariance matrix is implemented.
 
-.. automodule:: tfbm.tests
+.. automodule:: pytfbm.tests
    :members:
    :undoc-members:
-   :show-inheritance:   
+   :show-inheritance:
+   :no-index:
+
+
+
+References
+----------
+
+.. [1] Balcerek M., Burnecki K., Sikora G., and Wyłomańska A. (2021). "Discriminating Gaussian processes via quadratic form statistics." *Chaos*, 31(6):063101

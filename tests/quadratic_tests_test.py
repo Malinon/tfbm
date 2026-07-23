@@ -2,8 +2,8 @@ import pytest
 import numpy as np
 from scipy.stats import chi2
 
-from tfbm.tests import avcf_test, dma_test, tamsd_test, quadratic_stat_test
-from tfbm import TFBM1, TFBM2, TFBM3
+from pytfbm.tests import avcf_test, dma_test, tamsd_test, quadratic_stat_test
+from pytfbm import TFBM1, TFBM2, TFBM3
 
 def _template_const_testing(test_function, test_name):
     trajectory = np.zeros(100)

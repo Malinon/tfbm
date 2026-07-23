@@ -4,20 +4,20 @@ API Reference
 This section provides detailed documentation of all classes and functions in the TFBM package.
 
 TFBM Generation
-------------
+---------------
 
 The TFBM package provides several classes for generating different types of tempered fractional Brownian motions:
 
 .. autosummary::
    :toctree: generated/
 
-   tfbm.TFBM
-   tfbm.TFBM1
-   tfbm.TFBM2
-   tfbm.TFBM3
+   pytfbm.TFBM
+   pytfbm.TFBM1
+   pytfbm.TFBM2
+   pytfbm.TFBM3
 
 
-.. automodule:: tfbm.TFBM
+.. automodule:: pytfbm.TFBM
    :members:
    :undoc-members:
 
@@ -27,7 +27,7 @@ TFBM Generation
 TFBM1 Class
 ~~~~~~~~~~~
 
-.. automodule:: tfbm.TFBM1
+.. automodule:: pytfbm.TFBM1
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,7 +36,7 @@ TFBM1 Class
 TFBM2 Class
 ~~~~~~~~~~~
 
-.. automodule:: tfbm.TFBM2
+.. automodule:: pytfbm.TFBM2
    :members:
    :undoc-members:
    :show-inheritance:
@@ -45,7 +45,7 @@ TFBM2 Class
 TFBM3 Class
 ~~~~~~~~~~~
 
-.. automodule:: tfbm.TFBM3
+.. automodule:: pytfbm.TFBM3
    :members:
    :undoc-members:
    :show-inheritance:
@@ -54,7 +54,7 @@ TFBM3 Class
 Quadratic Form Tests
 --------------------
 
-.. automodule:: tfbm.tests
+.. automodule:: pytfbm.tests
    :members:
    :undoc-members:
    :show-inheritance:

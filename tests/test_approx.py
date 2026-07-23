@@ -1,5 +1,5 @@
-from tfbm.approx import find_optimal_eigenvals, wood_chan
-from tfbm import TFBM1, TFBM2, TFBM3
+from pytfbm.approx import find_optimal_eigenvals, wood_chan
+from pytfbm import TFBM1, TFBM2, TFBM3
 import pytest
 import numpy as np
 

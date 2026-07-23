@@ -1,5 +1,5 @@
 import pytest
-from tfbm import TFBM2
+from pytfbm import TFBM2
 import numpy as np
 
 

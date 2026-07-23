@@ -21,58 +21,55 @@ Mathematical Definitions
 ------------------------
 
 TFBM I
-~~~~~~
+------
 
 The stochastic processes :math:`B^{I}_{H,\lambda} = \{B^{I}_{H,\lambda}(t)\}_{t\in\mathbb{R}}` defined by the Wiener integral
 
 .. math::
 
-   B^{I}_{H,\lambda}(t) := \int_{\mathbb{R}} g^{I}_{H,\lambda,t}(s) \,dB_{s},
+    B^{I}_{H,\lambda}(t) := \int_{\mathbb{R}} g^{I}_{H,\lambda,t}(s) \,dB_{s},
 
 where
 
 .. math::
 
-   g^{I}_{H,\lambda,t}(s) := \left[(t - s)_{+}^{H- \frac{1}{2}} e^{\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{\lambda(-s)_{+}}\right], \quad s \in \mathbb{R}
+    g^{I}_{H,\lambda,t}(s) := \left[(t - s)_{+}^{H- \frac{1}{2}} e^{-\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{-\lambda(-s)_{+}}\right], \quad s \in \mathbb{R}
 
-is called a tempered fractional Brownian motion (TFBM I).
+is called a tempered fractional Brownian motion of the first kind (TFBM I)
 
-TFBM II  
-~~~~~~~
+TFBM II
+-------
 
 The stochastic processes :math:`B^{II}_{H,\lambda} = \{B^{II}_{H,\lambda}(t)\}_{t\in\mathbb{R}}` defined by the Wiener integral
 
 .. math::
 
-   B^{II}_{H,\lambda}(t) := \int_{\mathbb{R}} g^{II}_{H,\lambda,t}(s) \,dB_{s},
+    B^{II}_{H,\lambda}(t) := \int_{\mathbb{R}} g^{II}_{H,\lambda,t}(s) \,dB_{s},
 
 where
 
 .. math::
 
-   g^{II}_{H,\lambda,t}(s) := (t - s)_{+}^{H- \frac{1}{2}} e^{\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{\lambda(-s)_{+}} + \lambda \int_{0}^{t} (u - s)_{+}^{H- \frac{1}{2}} e^{\lambda(u-s)_{+}} du, \quad s \in \mathbb{R},
+    g^{II}_{H,\lambda,t}(s) := (t - s)_{+}^{H- \frac{1}{2}} e^{-\lambda(t-s)_{+}} - (-s)_{+}^{H- \frac{1}{2}} e^{-\lambda(-s)_{+}} + \lambda \int_{0}^{t} (u - s)_{+}^{H- \frac{1}{2}} e^{-\lambda(u-s)_{+}} du, \quad s \in \mathbb{R},
 
 is called a tempered fractional Brownian motion of the second kind (TFBM II).
 
 TFBM III
-~~~~~~~~
+--------
 
-A stochastic process :math:`B^{III}_{H,\lambda} = \{B^{III}_{H,\lambda}(t)\}_{t\in\mathbb{R}}` is called a tempered fractional Brownian motion of the third kind (TFBM III) if it satisfies the differential equation:
-
- 
+We consider the overdamped stochastic equation of motion of a particle in a viscous medium under the influence of a stochastic force :math:`\xi(t)`. A stochastic process :math:`B^{III}_{H,\lambda} = \{B^{III}_{H,\lambda}(t)\}_{t\in\mathbb{R}}` is called a tempered fractional Brownian motion of the third kind (TFBM III) if it satisfies the differential equation:
 
 .. math::
 
-   \frac{dB^{III}_{H,\lambda}(t)}{dt} = \nu(t),
+    \frac{dB^{III}_{H,\lambda}(t)}{dt} = \frac{\xi(t)}{m\eta} = \nu(t),
 
-where :math:`\nu(t)` represents a velocity process with the autocorrelation function given by:
+where :math:`m` is the particle mass, :math:`\eta` the friction coefficient and :math:`\nu(t)` represents a velocity process with the autocorrelation function given by:
 
 .. math::
 
-   \gamma_{H}(\tau) = \frac{1}{\Gamma(2H - 1)} \tau^{2H-2}e^{-\tau /\tau^{*}}, \quad \tau > 0,
+    \gamma_{H}(\tau) = \frac{1}{\Gamma(2H - 1)} \tau^{2H-2}e^{-\tau /\tau^{*}}, \quad \tau > 0,
 
-where :math:`\tau^* > 0` is a characteristic crossover time scale, and the Hurst parameter
-satisfies :math:`\frac{1}{2} \leq H < 1`.
+where :math:`\tau^* > 0` is a characteristic crossover time scale, and the Hurst parameter satisfies :math:`\frac{1}{2} \leq H < 1`.
 
 Installation
 ------------
@@ -89,7 +86,7 @@ Usage Example
 
 .. code-block:: python
 
-   from tfbm import TFBM1
+   from pytfbm import TFBM1
    import numpy as np
    import matplotlib.pyplot as plt
    
@@ -130,10 +127,10 @@ API Reference
    :maxdepth: 2
    :caption: API:
    
-   modules/tfbm
-   modules/tfbm1
-   modules/tfbm2  
-   modules/tfbm3
+   modules/pytfbm
+   modules/pytfbm1
+   modules/pytfbm2  
+   modules/pytfbm3
    modules/tests
 
 
