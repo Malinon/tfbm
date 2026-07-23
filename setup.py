@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pytfbm',
-    version='0.1',
+    version='1.0.0',
     packages=find_packages(),
     install_requires=["numpy", "scipy", "mpmath"],
     description='Package for simulating tempered fractional Brownian motion',
