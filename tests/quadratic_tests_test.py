@@ -9,11 +9,10 @@ def _template_const_testing(test_function, test_name):
     trajectory = np.zeros(100)
     for tfbm_type in range(1, 4):
         for lambd in [0.1, 0.5, 1.0]:
-            for lag in [1, 5, 10]:
+            for lag in [2, 5, 10]:
                 for T in [1, 5, 10]:
                     p_value = test_function(trajectory, str(tfbm_type), 0.75, lambd, lag, T, monte_carlo_steps=1000)
                     assert p_value < 0.1, f"Constant trajectory test failed for {test_name} with tfbm_type={tfbm_type}, lambd={lambd}, lag={lag}, T={T}"
-
 
 @pytest.mark.parametrize("tfbm_type", [TFBM1, TFBM2, TFBM3])
 @pytest.mark.parametrize("lambd", [0.1, 0.5, 1.0])

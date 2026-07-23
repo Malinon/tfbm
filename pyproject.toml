@@ -1,0 +1,23 @@
+[project]
+name = "pytfbm"
+version = "1.0.0"
+authors = [
+  { name="Jakub Malinowski", email="jakub.malinowski@pwr.edu.pl" },
+]
+description = "Package for simulating and detecting tempered fractional Brownian motions"
+readme = "README.rst"
+requires-python = ">=3.6"
+dependencies = [
+    "numpy",
+    "scipy>=1.14.1",
+    "mpmath>=1.3.0",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICENSE.md"]
+
+[project.urls]
+Homepage = "https://github.com/Malinon/tfbm"
