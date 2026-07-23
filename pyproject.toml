@@ -1,6 +1,6 @@
 [project]
 name = "pytfbm"
-version = "1.0.4"
+version = "1.0.0"
 authors = [
   { name="Jakub Malinowski", email="jakub.malinowski@pwr.edu.pl" },
 ]
